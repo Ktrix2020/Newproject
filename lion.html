@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnStream UI</title>
+  <style>
+    /* General body styles */
+    body {
+      margin: 0;
+      background-color: #0d0d0d; /* Dark background */
+      color: #fff; /* White text */
+      font-family: Arial, sans-serif; /* Font family */
+    }
+
+    /* Header styles */
+    .app-header {
+      display: flex; /* Flexbox layout */
+      align-items: center; /* Center items vertically */
+      justify-content: space-between; /* Space between logo and menu icons */
+      padding: 16px; /* Padding around header */
+      background-image: url('two.jpg'); /* Background image */
+      height: 80px; /* Fixed height for header */
+      width: 90%; /* Header width */
+      flex-wrap: wrap; /* Allow items to wrap */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6); /* Shadow effect */
+      color: darkred; /* Text color */
+    }
+
+    /* Logo styles */
+    .logo {
+      display: flex; /* Flexbox layout */
+      align-items: center; /* Center items vertically */
+      gap: 10px; /* Space between logo image and text */
+    }
+
+    .logo img {
+      height: 40px; /* Increased logo image height for better visibility */
+    }
+
+    /* Menu icon styles */
+    .menu-icons img {
+      height: 24px; /* Icon height */
+      margin-left: 16px; /* Space to the left of icons */
+      filter: brightness(0.8); /* Dim icons */
+      transition: filter 0.3s ease; /* Smooth transition for hover effect */
+    }
+
+    /* Hover effect for menu icons */
+    .menu-icons img:hover {
+      filter: brightness(1.2); /* Brighten on hover */
+    }
+
+    /* Tab styles */
+    .tabs {
+      display: flex; /* Flexbox layout */
+      padding: 10px 16px; /* Padding around tabs */
+      gap: 16px; /* Space between tabs */
+      background-color: #111; /* Background color */
+      font-weight: bold; /* Bold text */
+      overflow-x: auto; /* Allow horizontal scrolling */
+    }
+
+    /* Tab item styles */
+    .tabs span {
+      cursor: pointer; /* Pointer cursor on hover */
+      color: #aaa; /* Default text color */
+      white-space: nowrap; /* Prevent text wrapping */
+      transition: color 0.3s ease; /* Smooth color transition */
+    }
+
+    /* Hover effect for tab items */
+    .tabs span:hover {
+      color: #fff; /* Change color on hover */
+    }
+
+    /* Active tab styles */
+    .tabs .active {
+      color: white; /* Active tab text color */
+      border-bottom: 2px solid #e0ff00; /* Underline for active tab */
+      padding-bottom: 2px; /* Padding for active tab */
+    }
+
+    /* Movie scroll container styles */
+    .movie-scroll {
+      overflow-x: auto; /* Allow horizontal scrolling */
+      white-space: nowrap; /* Prevent text wrapping */
+      scroll-behavior: smooth; /* Smooth scrolling */
+      padding: 16px; /* Padding around movie scroll */
+      scroll-snap-type: x mandatory; /* Snap to items */
+      background: linear-gradient(to bottom, #111, #0d0d0d); /* Gradient background */
+    }
+
+    /* Custom scrollbar styles */
+    .movie-scroll::-webkit-scrollbar {
+      height: 8px; /* Height of the scrollbar */
+    }
+
+    .movie-scroll::-webkit-scrollbar-thumb {
+      background: darkred; /* Color of the scrollbar thumb */
+      border-radius: 4px; /* Rounded corners for the thumb */
+    }
+
+    /* Movie card styles */
+    .movie-card {
+      display: inline-block; /* Inline block for horizontal layout */
+      width: 160px; /* Standard width for each movie card */
+      margin-right: 12px; /* Space to the right of cards */
+      vertical-align: top; /* Align cards to the top */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+      scroll-snap-align: center; /* Center alignment for snapping */
+      border-radius: 8px; /* Rounded corners for cards */
+      overflow: hidden; /* Hide overflow */
+      background-color: #1a1a1a; /* Background color for cards */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05); /* Subtle shadow effect */
+    }
+
+    /* Hover effect for movie cards */
+    .movie-card:hover {
+      transform: scale(1.05); /* Scale up slightly on hover */
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); /* Increase shadow on hover */
+    }
+
+    /* Active movie card styles */
+    .movie-card.active {
+      transform: scale(1.1); /* Scale up active card */
+      z-index: 2; /* Bring active card to the front */
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); /* Stronger shadow for active card */
+    }
+
+    /* Movie poster and video styles */
+    .movie-poster,
+    video {
+      height: 220px; /* Height of posters and videos */
+      width: 100%; /* Full width */
+      object-fit: cover; /* Cover the area */
+      border-radius: 8px; /* Rounded corners */
+      display: block; /* Block display */
+    }
+
+    /* Movie title styles */
+    .movie-title {
+      font-size: 14px; /* Font size for titles */
+      font-weight: bold; /* Bold text for titles */
+      text-align: center; /* Center align titles */
+      margin-top: 8px; /* Space above titles */
+      padding-bottom: 8px; /* Space below titles */
+    }
+
+    /* Bottom navigation styles */
+    .bottom-nav {
+      position: fixed; /* Fixed position at the bottom */
+      bottom: 0; /* Align to the bottom */
+      width: 100%; /* Full width */
+      background-color: #111; /* Background color */
+      display: flex; /* Flexbox layout */
+      justify-content: space-around; /* Space between buttons */
+      padding: 10px 0; /* Padding around nav */
+      z-index: 999; /* High z-index to stay on top */
+      border-top: 1px solid #222; /* Top border */
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.6); /* Shadow effect */
+    }
+
+    /* Button styles in bottom nav */
+    .bottom-nav button {
+      background: none; /* No background */
+      border: none; /* No border */
+      color: #aaa; /* Default text color */
+      font-size: 10px; /* Font size for buttons */
+      display: flex; /* Flexbox layout */
+      flex-direction: column; /* Column layout */
+      align-items: center; /* Center align items */
+      transition: color 0.3s ease; /* Smooth color transition */
+    }
+
+    /* Hover effect for bottom nav buttons */
+    .bottom-nav button:hover {
+      color: white; /* Change color on hover */
+    }
+
+    /* Active button styles */
+    .bottom-nav .active {
+      color: #e0ff00; /* Active button text color */
+      text-shadow: 0 0 5px #e0ff00; /* Glow effect for active button */
+    }
+
+    /* Image styles in bottom nav */
+    .bottom-nav img {
+      height: 20px; /* Height of icons */
+      margin-bottom: 4px; /* Space below icons */
+    }
+
+    /* Responsive styles for smaller screens */
+    @media (max-width: 600px) {
+      .movie-card {
+        width: 130px; /* Smaller width for movie cards */
+      }
+
+      .movie-title {
+        font-size: 12px; /* Smaller font size for titles */
+      }
+    }
+
+    /* Nick styles for additional scrolling content */
+    .nick {
+      display: flex; /* Flexbox layout */
+      overflow-x: auto; /* Allow horizontal scrolling */
+      padding: 20px 0; /* Padding around nick section */
+      gap: 15px; /* Space between images */
+      scroll-behavior: smooth; /* Smooth scrolling */
+      position: relative; /* Relative positioning */
+      color: red; /* Text color */
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="app-header">
+      <div class="logo">
+        <img src="" alt="Logo"> <!-- Placeholder for logo image -->
+        <strong>OnStream</strong> <!-- Application name -->
+      </div>
+      <div class="menu-icons">
+        <img src="https://img.icons8.com/ios-filled/24/search.png" alt="Search"> <!-- Search icon -->
+        <img src="https://img.icons8.com/ios-filled/24/user.png" alt="Profile"> <!-- Profile icon -->
+      </div>
+    </div>
+
+    <div class="tabs">
+      <span class="active">Trending</span> <!-- Active tab -->
+      <span>Popular</span> <!-- Inactive tab -->
+    </div>
+    
+    <div class="movie-scroll" id="movieScroll">
+      <div class="movie-card">
+        <img class="movie-poster" src="one.jpg" alt="Movie 1"> <!-- Movie poster -->
+        <div class="movie-title">Movie 1</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <video controls>
+          <source src="video.mp4" type="video/mp4"> <!-- Video source -->
+          Your browser does not support the video tag. <!-- Fallback message -->
+        </video>
+        <div class="movie-title">Movie 2</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+3" alt="Movie 3"> <!-- Movie poster -->
+        <div class="movie-title">Movie 3</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+4" alt="Movie 4"> <!-- Movie poster -->
+        <div class="movie-title">Movie 4</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+5" alt="Movie 5"> <!-- Movie poster -->
+        <div class="movie-title">Movie 5</div> <!-- Movie title -->
+      </div>
+    </div>
+
+    <div class="movie-scroll" id="movieScroll">
+      <div class="movie-card">
+        <img class="movie-poster" src="one.jpg" alt="Movie 1"> <!-- Movie poster -->
+        <div class="movie-title">Movie 1</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <video controls>
+          <source src="video.mp4" onclick="subject()" type="video/mp4"> <!-- Video source -->
+          Your browser does not support the video tag. <!-- Fallback message -->
+        </video>
+        <div class="movie-title">Movie 2</div> <!-- Movie title -->
+      </div>
+        <div class="movie-title">Movie 2</div> <!-- Movie title -->
+      </div>
+      
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+3" alt="Movie 3"> <!-- Movie poster -->
+        <div class="movie-title">Movie 3</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+4" alt="Movie 4"> <!-- Movie poster -->
+        <div class="movie-title">Movie 4</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+5" alt="Movie 5"> <!-- Movie poster -->
+        <div class="movie-title">Movie 5</div> <!-- Movie title -->
+      </div>
+    </div>
+
+    <div class="movie-scroll" id="movieScroll">
+      <div class="movie-card">
+        <img class="movie-poster" src="one.jpg" alt="Movie 1"> <!-- Movie poster -->
+        
+        <div class="movie-title">Movie 1</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <video controls>
+          <source src="video.mp4" type="video/mp4"> <!-- Video source -->
+          Your browser does not support the video tag. <!-- Fallback message -->
+        </video>
+        <div class="movie-title">Movie 2</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+3" alt="Movie 3"> <!-- Movie poster -->
+        <div class="movie-title">Movie 3</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+4" alt="Movie 4"> <!-- Movie poster -->
+        <div class="movie-title">Movie 4</div> <!-- Movie title -->
+      </div>
+      <div class="movie-card">
+        <img class="movie-poster" src="https://via.placeholder.com/150x220.png?text=Movie+5" alt="Movie 5"> <!-- Movie poster -->
+        <div class="movie-title">Movie 5</div> <!-- Movie title -->
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="active">
+        <img src="https://img.icons8.com/ios-filled/24/home.png" alt="Home"><span>Home</span> <!-- Home button -->
+      </button>
+      <button>
+        <a href="#"><img src="https://img.icons8.com/ios-filled/24/video.png" alt="Movies"><span>Movies</span></a> <!-- Movies button -->
+      </button>
+      <button>
+        <img src="https://img.icons8.com/ios-filled/24/monitor.png" alt="TV"><span>TV Series</span> <!-- TV Series button -->
+      </button>
+      <button>
+        <img src="https://img.icons8.com/ios-filled/24/bookmark-ribbon.png" alt="Watchlist"><span>Watch List</span> <!-- Watch List button -->
+      </button>
+    </div><br><br><br><br><br>
+  </div>
+
+  <script>
+    const scrollContainer = document.getElementById('movieScroll'); // Get the movie scroll container
+    const cards = scrollContainer.querySelectorAll('.movie-card'); // Get all movie cards
+
+    let scrollDirection = 1; // Initialize scroll direction
+
+    // Function to auto-scroll the movie cards
+    function autoScroll() {
+      if (scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth) {
+        scrollDirection = -1; // Change direction to left
+      } else if (scrollContainer.scrollLeft <= 0) {
+        scrollDirection = 1; // Change direction to right
+      }
+      scrollContainer.scrollLeft += 1 * scrollDirection; // Scroll the container
+    }
+
+    // Function to highlight the center movie card
+    function highlightCenterCard() {
+      const containerCenter = scrollContainer.scrollLeft + scrollContainer.clientWidth / 2; // Calculate center of the container
+
+      cards.forEach(card => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2; // Calculate center of each card
+        const distance = Math.abs(containerCenter - cardCenter); // Calculate distance from center
+        if (distance < card.offsetWidth / 2) {
+          card.classList.add('active'); // Add active class if card is centered
+        } else {
+          card.classList.remove('active'); // Remove active class if not centered
+        }
+      });
+    }
+
+    // Set interval for auto-scrolling and highlighting center card
+    setInterval(() => {
+      autoScroll(); // Call auto-scroll function
+      highlightCenterCard(); // Call highlight function
+    }, 30); // Interval time in milliseconds
+
+    // Event listener for scroll event to highlight center card
+    scrollContainer.addEventListener('scroll', highlightCenterCard);
+    highlightCenterCard(); // Initial call to highlight center card
+    function subject(){
+        document.write("soma");
+    }
+    function subject(){
+        document.getElementById("soma");
+    }
+  </script>
+</body>
+</html>
